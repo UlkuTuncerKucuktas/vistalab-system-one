@@ -98,9 +98,9 @@ def train(size):
     start, running = time.time(), 0.0
     for step, batch in enumerate(batches):
         # as many questions per forward pass as fit in the token budget; batches hold questions of similar length
-        size = TOKENS_PER_PASS // max(len(ids) for ids, _, _ in batch)
-        for i in range(0, len(batch), size):
-            micro = batch[i : i + size]
+        per_pass = TOKENS_PER_PASS // max(len(ids) for ids, _, _ in batch)
+        for i in range(0, len(batch), per_pass):
+            micro = batch[i : i + per_pass]
             logps, shown = letters(model, llm, table, micro)
             loss = loss_of(logps, shown, micro) / len(batch)
             loss.backward()
